@@ -23,7 +23,7 @@ class CrossValidation(object):
                 group1.append(self.train.npdata[i])
 
         for i in range(0, self.num_folds):
-            self.subdata[i] = []
+            self.subdata[i + 1] = []
 
         random.seed(seed)
         i = 0
