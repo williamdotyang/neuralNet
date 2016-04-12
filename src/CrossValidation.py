@@ -8,35 +8,42 @@ class CrossValidation(object):
     def __init__(self, train, num_folds):
         self.train = train
         self.num_folds = num_folds
-        self.subdata = {}
+        self.subdataIndicies = {} # {fold_i: [indicies in train.data]}
+        self.index2fold = {} # {data_index:fold_i}
 
-    ## Make stratified cross validation datasets by setting up the subdata.
+    ## Make stratified cross validation datasets by setting up the subdataIndicies.
     def stratify(self, seed=1):
-        group0 = []
-        group1 = []
+        group0 = [] # [indicies of label0]
+        group1 = [] # [indicies of label1]
         label0 = self.train.variables["class"][0]
-        for i in range(0, len(self.train.npdata)):
-            label = self.train.data[i]
+        for i in range(0, len(self.train.data)):
+            label = self.train.data[i][-1]
             if label == label0:
-                group0.append(self.train.npdata[i])
+                group0.append(i)
             else:
-                group1.append(self.train.npdata[i])
+                group1.append(i)
 
         for i in range(0, self.num_folds):
-            self.subdata[i + 1] = []
+            self.subdataIndicies[i+1] = []
 
         random.seed(seed)
         i = 0
         while group0 != []:
             randIndex = random.randint(0, len(group0) - 1)
-            self.subdata[i].append(group0[randIndex])
+            indexInMatrix = group0[randIndex]
+            self.subdataIndicies[i+1].append(indexInMatrix)
+            self.index2fold[indexInMatrix] = i
             i = (i + 1) % self.num_folds
             del(group0[randIndex])
 
         i = 0
         while group1 != []:
             randIndex = random.randint(0, len(group1) - 1)
-            self.subdata[i].append(group1[randIndex])
+            indexInMatrix = group1[randIndex]
+            self.subdataIndicies[i+1].append(indexInMatrix)
+            self.index2fold[indexInMatrix] = i
             i = (i + 1) % self.num_folds
             del(group1[randIndex])
 
+        for i in range(0, self.num_folds):
+            random.shuffle(self.subdataIndicies[i+1])
