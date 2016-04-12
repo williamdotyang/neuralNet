@@ -1,8 +1,9 @@
 import re
+import numpy as np
 
 class Data:
     """ A class representation of dataset, either training or testing.
-        All the variables are discrete, and class variable is binary.
+        All the features are continuous, and class variable is binary.
         Provides some basic counting functions of instances.
     """
 
@@ -27,11 +28,25 @@ class Data:
             elif line[0] == '@':
                 tokens = line.split(None, 2)
                 if tokens[0] == "@attribute":
-                    attribute = tokens[1].strip("'")
+                    attribute = tokens[1].strip("'").lower()
                     self.names.append(attribute)
                     self.variables[attribute] = re.split(', *', tokens[2].strip("{ }"))
             else: # data lines
                 self.data.append(line.split(','))
+
+        # convert all the attributes and class label into numeric
+        self.npdata = []
+        label1 = self.variables['class'][1] # class label that to be classified as 1
+        for line in self.data:
+            attributes = line[0:-1]
+            label = line[-1]
+            if label == label1:
+                label = 1
+            else:
+                label = 0
+            self.npdata.append([float(x) for x in attributes] + [label])
+        self.npdata = np.array(self.npdata)
+
 
     ##
     # Get the number of variables in this data set.
@@ -86,4 +101,7 @@ if __name__ == '__main__':
     # test code
     train = Data('sonar.arff')
     train.parse()
-    print train
+    print train.names
+    print train.variables
+    print train.data[1]
+    print train.npdata[1]
