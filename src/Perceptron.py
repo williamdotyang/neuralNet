@@ -7,9 +7,8 @@ class Perceptron(object):
     """
     A class representation of a neural perceptron.
     """
-    def __init__(self, name, learningRate):
+    def __init__(self, name):
         self.name = name
-        self.learningRate = learningRate
 
     ## Set weights for the inputs and offset
     # weights = [weight for offset, weight for input1, ...]
@@ -17,6 +16,12 @@ class Perceptron(object):
         self.weights = np.array(weights)
         if verbose:
             print self.name, "weights set", self.weights.tolist()
+
+    ## Set learning rate
+    def setLearningRate(self, learningRate, verbose = False):
+        self.learningRate = learningRate
+        if verbose:
+            print self.name, "learningRate set", self.learningRate
 
     ## Calculated the output, using sigmoid function.
     # inputs = [1, input1, input2, ...]
