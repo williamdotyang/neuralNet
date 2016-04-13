@@ -45,5 +45,19 @@ class CrossValidation(object):
             i = (i + 1) % self.num_folds
             del(group1[randIndex])
 
-        for i in range(0, self.num_folds):
-            random.shuffle(self.subdataIndicies[i+1])
+        #for i in range(0, self.num_folds):
+        #    random.shuffle(self.subdataIndicies[i+1])
+
+    ## based on subdataIndicies, create subdata matrix: train and test
+    def getSubdata(self, fold):
+        indicies = set(self.subdataIndicies[fold])
+        subdataTest = []
+        subdataTrain = []
+        for i in range(0, len(self.train.data)):
+            if i in indicies:
+                subdataTest.append(self.train.data[i])
+            else:
+                subdataTrain.append(self.train.data[i])
+        random.shuffle(subdataTrain)
+        random.shuffle(subdataTest)
+        return subdataTrain, subdataTest
