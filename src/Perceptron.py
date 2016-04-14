@@ -1,13 +1,13 @@
 from __future__ import division
 import math
-import calc
+import tools.calc as calc
 import numpy as np
 
 class Perceptron(object):
     """
     A class representation of a neural perceptron.
     """
-    def __init__(self, name):
+    def __init__(self, name = None):
         self.name = name
 
     ## Set weights for the inputs and offset
@@ -45,6 +45,7 @@ class Perceptron(object):
     ## Update the weights
     def backPropUpdate(self, inputs, errorContribution, verbose = False):
         delta = self.getDelta(inputs, errorContribution)
+        inputs = np.array(inputs)
         delta_weights = self.learningRate * delta * inputs
         if verbose:
             print self.name, "old weights:", self.weights.tolist()
