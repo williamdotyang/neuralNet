@@ -5,9 +5,10 @@ class CrossValidation(object):
     """A calss representation of cross validation datasets."""
 
     ## subdata = {1:[instances for fold 1], 2:[instances for fold 2], ...}
+    # @param train A Data object
     def __init__(self, train, num_folds):
         self.train = train
-        self.num_folds = num_folds
+        self.num_folds = int(num_folds)
         self.subdataIndicies = {} # {fold_i: [indicies in train.data]}
         self.index2fold = {} # {data_index:fold_i}
 
@@ -55,9 +56,9 @@ class CrossValidation(object):
         subdataTrain = []
         for i in range(0, len(self.train.data)):
             if i in indicies:
-                subdataTest.append(self.train.data[i])
+                subdataTest.append(self.train.npdata[i])
             else:
-                subdataTrain.append(self.train.data[i])
+                subdataTrain.append(self.train.npdata[i])
         random.shuffle(subdataTrain)
         random.shuffle(subdataTest)
         return subdataTrain, subdataTest
